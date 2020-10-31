@@ -1,0 +1,31 @@
+#board{
+    height: 500px;
+    width: 500px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+}
+
+#mm {
+    border: 1px solid black;
+}
+
+#tm {
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
+
+#mr {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+#ml {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+#bm {
+    border-left: 1px solid black;
+    border-right: 1px solid black;
+}
