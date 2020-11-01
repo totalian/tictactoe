@@ -1,37 +1,50 @@
-const game = ((currentPlayer,nextPlayer) => {
+const game = (currentPlayer,nextPlayer) => {
+    
+    displayController.spaces.forEach(square => {
+        square.addEventListener('click', e => {
+            if(gameboard.board[displayController.getSquareRow(e.target)][displayController.getSquareColumn(e.target)] != null){return}
+            currentPlayer.move(e.target)
+            displayController.printValue(square,currentPlayer.choice)
+            if(gameboard.checkWinner()){
+                gameOver()
+            }
+            changePlayer()
+        })
+    })
 
     const changePlayer = function(){
-        [this.currentPlayer, this.nextPlayer] = [this.nextPlayer, this.currentPlayer]
+        [currentPlayer, nextPlayer] = [nextPlayer, currentPlayer]
     }
 
     const gameOver = function(){
         alert(`Game over ${getWinner()} has won the game`)
+        gameboard.boardReset()
+        displayController.clearSpaces()
     }
 
-    const allPlayers = function(){return [this.currentPlayer, this.nextPlayer]}
+    const allPlayers = [currentPlayer,nextPlayer]
 
-    const getPlayerByChoice = function(choice){
-        let allplayers = game.allPlayers()
-        for (player of allplayers){
+    const getPlayerByChoice = choice => {
+        for (player of allPlayers){
             if(player.choice == choice){
                 return player
             }
         }
     }
 
-    const getWinner = function(){
+    const getWinner = () => {
         let winner = getPlayerByChoice(gameboard.checkWinner())
         return winner.name
     }
 
     return {currentPlayer, nextPlayer, changePlayer, gameOver, getPlayerByChoice, allPlayers}
-})()
+}
 
 const gameboard = (() => {
 
     const board = [[null,null,null],[null,null,null],[null,null,null]]
 
-    const boardReset = () => board = [[null,null,null],[null,null,null],[null,null,null]]
+    const boardReset = () => board.forEach(arr => arr = [null,null,null])
 
     const updateBoard = (row,column,value) => {
         if(!board[row][column]){
@@ -84,13 +97,14 @@ const Player = (name,choice) => {
     const move = square => {
         let squareRow = displayController.getSquareRow(square)
         let squareColumn = displayController.getSquareColumn(square)
-        if(gameboard.updateBoard(squareRow,squareColumn,choice)){
-            displayController.printValue(square,choice)
-            if(gameboard.checkWinner()){
-                game.gameOver()
-            }
-            game.changePlayer()
-        }
+        gameboard.updateBoard(squareRow,squareColumn,choice)
+        // if(gameboard.updateBoard(squareRow,squareColumn,choice)){
+        //     displayController.printValue(square,choice)
+        //     if(gameboard.checkWinner()){
+        //         game.gameOver()
+        //     }
+        //     game.changePlayer()
+        // }
     }
 
     return {name,choice,move}
@@ -104,23 +118,20 @@ const displayController = (() => {
         square.dataset.row = row
         square.dataset.column = column
 
-        square.addEventListener('click', e => {
-            game.currentPlayer.move(e.target)
-        })
-
     })
 
-    const getSquareRow = square => square.dataset.row
-    const getSquareColumn = square => square.dataset.column
+    const getSquareRow = square => parseInt(square.dataset.row)
+    const getSquareColumn = square => parseInt(square.dataset.column)
 
     const printValue = (square,value) => {
         square.innerHTML = value
     }
 
-    return {getSquareColumn,getSquareRow,printValue}
+    const clearSpaces = () => spaces.forEach(square => square.innerHTML = "")
+
+    return {getSquareColumn,getSquareRow,printValue,spaces,clearSpaces}
 })()
 
 const zeki = Player('zeki','x')
 const amir = Player('amir','o')
-game.currentPlayer = zeki
-game.nextPlayer = amir
+const newGame = game(zeki,amir)
