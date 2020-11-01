@@ -6,7 +6,7 @@ const game = (currentPlayer,nextPlayer) => {
             currentPlayer.move(e.target)
             displayController.printValue(square,currentPlayer.choice)
             if(gameboard.checkWinner()){
-                gameOver()
+                setTimeout(gameOver,500)
             }
             changePlayer()
         })
@@ -44,7 +44,13 @@ const gameboard = (() => {
 
     const board = [[null,null,null],[null,null,null],[null,null,null]]
 
-    const boardReset = () => board.forEach(arr => arr = [null,null,null])
+    const boardReset = () => {
+        for (let i = 0; i < 3; i++){
+            for (let j = 0; j < 3; j++){
+                board[i][j] = null
+            }
+        }
+    }
 
     const updateBoard = (row,column,value) => {
         if(!board[row][column]){
@@ -98,13 +104,6 @@ const Player = (name,choice) => {
         let squareRow = displayController.getSquareRow(square)
         let squareColumn = displayController.getSquareColumn(square)
         gameboard.updateBoard(squareRow,squareColumn,choice)
-        // if(gameboard.updateBoard(squareRow,squareColumn,choice)){
-        //     displayController.printValue(square,choice)
-        //     if(gameboard.checkWinner()){
-        //         game.gameOver()
-        //     }
-        //     game.changePlayer()
-        // }
     }
 
     return {name,choice,move}
